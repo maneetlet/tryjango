@@ -1,0 +1,14 @@
+<html>
+<title>{% block head_title %} this is me {% endblock head_title %}  </title>
+<body>
+     {% include 'snippets/css.html' %}
+<div class='container'>
+	 {% include 'snippets/nav.html' %}
+    {% block content %}{% endblock content %}
+   
+</div>
+ {% include 'snippets/footer.html' %}
+{% include 'snippets/js.html' %}
+
+</body>
+</html>
