@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.views import View
 from django.views.generic import TemplateView
 import random
+from .models import RestaurantLocation
 
 # Create your views here.
 # function based request 
@@ -27,6 +28,17 @@ class AboutView(TemplateView):
 
 class ContactView(TemplateView):
 	template_name = 'contact.html'
+
+class RestaurantListView(TemplateView):
+	template_name = 'restaurants/restaurants_list.html'
+	def get_context_data(self, *args, **kwargs):
+		context = super(RestaurantListView, self).get_context_data(*args, **kwargs)
+		queryset = RestaurantLocation.objects.all()
+		
+		context = { 
+					 "object_list" : queryset
+			 		}
+		return context
 
 
 	"""def post (self, request, *args, **kwargs)
