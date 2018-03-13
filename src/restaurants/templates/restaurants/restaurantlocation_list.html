@@ -5,11 +5,18 @@
 {% block content %}
 
 <h1> check this </h1>
-
+<table class="table">
+	<tbody>
 {% for abj in object_list %} 
-	<li> {{abj.name}} </li>
-{% endfor %}
+<tr>
+	<td> {{abj.title}} </td>
+	<td> {{abj.location}} </td>
+	<td> {{abj.category}} </td>
+</tr>
 
+{% endfor %}
+</tbody>
+</table>
 
 
 {% endblock %}

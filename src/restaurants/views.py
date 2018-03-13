@@ -1,7 +1,8 @@
+from django.db.models import Q
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404
 from django.views import View
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView, ListView, DetailView
 import random
 from .models import RestaurantLocation
 
@@ -9,7 +10,7 @@ from .models import RestaurantLocation
 # function based request 
 class HomeView(TemplateView):
 	template_name = 'home.html'	
-	def get_context_data(self, *args, **kwargs): 
+	'''def get_context_data(self, *args, **kwargs): 
 		context = super(HomeView, self).get_context_data(*args, **kwargs)
 		template_name = 'home.html'
 	#	return HttpResponse("hello")
@@ -20,37 +21,42 @@ class HomeView(TemplateView):
 			"numcheck": num,
 			"some_text": some_text
 		}
-		return context 
+		return context '''
 
-class AboutView(TemplateView):
-	template_name = 'about.html'
-	
+#this is a list view that uses one template to show filters and all the data
+class RestaurantListView(ListView):
+	def get_queryset(self):
+		print (self.kwargs)
+		slug = self.kwargs.get("slug")
+		if slug:
+			queryset = RestaurantLocation.objects.filter(
+				Q(category__iexact=slug) |
+				Q(category__icontains=slug)
+			)
+		else:
+			queryset = RestaurantLocation.objects.all()
+			print
+		return queryset
+# this is for the detail view of the product 
+class RestaurantDetailView(DetailView):
+	queryset = RestaurantLocation.objects.all()
 
-class ContactView(TemplateView):
-	template_name = 'contact.html'
+	 #this is to check what is the coming in get url and wht is it fetching
+	'''def get_context_data(self, *args, **kwargs):
+		print(self.kwargs)
+		context = super(RestaurantDetailView, self).get_context_data(*args, **kwargs)
+		print(context)
+		return context'''
 
-class RestaurantListView(TemplateView):
-	template_name = 'restaurants/restaurants_list.html'
-	def get_context_data(self, *args, **kwargs):
-		context = super(RestaurantListView, self).get_context_data(*args, **kwargs)
-		queryset = RestaurantLocation.objects.all()
-		
-		context = { 
-					 "object_list" : queryset
-			 		}
-		return context
+	def get_object(self, *args, **kwargs):
+		rest_id = self.kwargs.get("rest_id")
+		obj = get_object_or_404(RestaurantLocation, id = rest_id) #pk = rest_id (it makes the rest id equal to default django get url keywords)
+		return obj
 
 
-	"""def post (self, request, *args, **kwargs)
-		context = {
 
-		}
-		return render(request, "contact.html", context)"""
-	'''def put (self, request, *args, **kwargs):
-		context = {
 
-		}	
-		return render(request, "contact.html", context)'''
+
 
 
 
